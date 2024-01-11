@@ -1,0 +1,7 @@
+{
+  "editor.defaultFormatter": "ms-python.pylint",
+  "python.analysis.inlayHints.functionReturnTypes": true,
+  "python.analysis.inlayHints.pytestParameters": true,
+  "python.REPL.enableREPLSmartSend": true,
+  "python.analysis.autoFormatStrings": true
+}
