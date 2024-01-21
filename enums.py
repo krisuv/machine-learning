@@ -1,16 +1,5 @@
 from enum import Enum
 
-UNKNOWN_VALUE = 'unknown'
-
-class Citizenship(str, Enum):
-    """Enum meaning person citizenship"""
-
-    ISRAELI = "Israeli"
-    PALESTINIAN = "Palestinian"
-
-    def __str__(self) -> str:
-        return str.__str__(self)
-
 
 class Default_columns(str, Enum):
     """Enum with column names in original database"""
@@ -38,18 +27,19 @@ class Default_columns(str, Enum):
 
 class Restructured_columns(str, Enum):
     AGE = "age"
-    EVENT_DATE_JEWISH_HOLIDAY = "event_date_jewish_holiday"
-    EVENT_DATE_MUSLIM_HOLIDAY = "event_date_muslim_holiday"
 
-    CITIZENSHIP_ISRAELI = "citizenship_israeli"
-    CITIZENSHIP_PALESTINIAN = "citizenship_palestinian"
+    DATE_JEWISH_HOLIDAY = "date_jewish_holiday"
+    DATE_ISLAMIC_HOLIDAY = "date_islamic_holiday"
+
+    IS_ISRAELI = "is_israeli"
+    IS_PALESTINIAN = "is_palestinian"
 
     EVENT_LOCATION_GAZA_STRIP = "event_location_gaza_strip"
     EVENT_LOCATION_WEST_BANK = "event_location_west_bank"
     EVENT_LOCATION_ISRAEL = "event_location_israel"
 
-    SEX_M = "sex_m"
-    SEX_F = "sex_f"
+    IS_MALE = "is_male"
+    IS_FEMALE = "is_female"
 
     AMMUNITION_FIREARMS = "ammunition_firearms"
     AMMUNITION_GROUND_EXPLOSIVES = "ammunition_ground_explosives"

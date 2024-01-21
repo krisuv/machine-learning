@@ -1,41 +1,26 @@
-"""module with functions for getting Jewish and Islamic holidays from 2000 to 2023"""
+"""module with functions for getting Islamic holidays from 2000 to 2023"""
 import math
-import requests
-from requests.exceptions import HTTPError, Timeout, RequestException
 from datetime import datetime
+import requests
+from requests.exceptions import HTTPError, Timeout
+from api.constants import START_YEAR, END_YEAR
+from concurrent.futures import ThreadPoolExecutor
+from utils.file_utils import save_to_csv_file
+import sys
 
-START_YEAR = 2000
-END_YEAR = 2023
 
+def get_data_concurrently(function, cpu_threads_amount) -> list:
+    with ThreadPoolExecutor(max_workers=cpu_threads_amount) as executor:
+        future_to_ordinal = {
+            executor.submit(function, ordinal, cpu_threads_amount): ordinal
+            for ordinal in range(cpu_threads_amount)
+        }
 
-def get_jewish_holidays() -> list[dict[str, str]]:
-    """Function getting jewish_holiday list from external web API www.hebcal.com/hebcal."""
-    try:
-        url = f"https://www.hebcal.com/hebcal?v=1&cfg=json&maj=on&mod=on&start={START_YEAR}-01-01&end={END_YEAR}-12-31"
-        response = requests.get(url, timeout=50)
-        response.raise_for_status()
+        data = []
+        for future in future_to_ordinal:
+            data += future.result()
 
-        data_list_json = response.json()
-
-        data_list = data_list_json["items"]
-
-        holiday_dates = list(
-            map(
-                lambda holiday: {"date": holiday["date"], "name": holiday["title"]},
-                data_list,
-            )
-        )
-
-        return holiday_dates
-
-    except HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-    except ConnectionError as conn_err:
-        print(f"Connection error occurred: {conn_err}")
-    except Timeout as timeout_err:
-        print(f"Timeout error occurred: {timeout_err}")
-    except RequestException as req_err:
-        print(f"Request exception occurred: {req_err}")
+    return data
 
 
 def get_islamic_holidays(ordinal: int, cpu_threads_amount: int) -> list[dict[str, str]]:
@@ -70,7 +55,9 @@ def get_islamic_holidays(ordinal: int, cpu_threads_amount: int) -> list[dict[str
                 dates_list = list(
                     map(
                         lambda day: {
-                            "date": datetime.strptime(day["gregorian"]["date"], '%Y-%m-%d'),
+                            "date": datetime.strptime(
+                                day["gregorian"]["date"], "%Y-%m-%d"
+                            ),
                             "name": day["hijri"]["holidays"][0],
                         },
                         data_filtered,
@@ -87,3 +74,13 @@ def get_islamic_holidays(ordinal: int, cpu_threads_amount: int) -> list[dict[str
                 print(f"Timeout error occurred: {timeout_err}")
 
     return holiday_dates
+
+
+islamic_holiday_dates = get_data_concurrently(
+    function=get_islamic_holidays, cpu_threads_amount=int(sys.argv[1])
+)
+save_to_csv_file(
+    file_name="islamic_holidays",
+    data=islamic_holiday_dates,
+    fieldnames=["date", "name"],
+)

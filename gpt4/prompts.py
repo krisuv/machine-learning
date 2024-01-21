@@ -19,24 +19,26 @@ def create_from_template(ctx: str, example: str) -> str:
     return template
 
 
-killed_by_assistant_prompt = create_from_template(
+# NO - 0, RATHER NO- 0.25 UNKNOWN - 0.5, ('Object of targeted killing') POSSIBLY - 0.75 YES - 1
+took_part_in_hostilities_prompt = create_from_template(
     ctx="""
 1. the user prompt is a list of comma-separated descriptions of Palestinians and Insraelis who died in ongoing Israeli-Palestinian conflicts. 
-2. Match each description from the list to one of the categories listed below and return an ordered array of categories. The categories are:
-a) 'killed_by_palestinian" - the person was killed by a palestinian citizen or fighter,
-b) 'killed_by_idf" - the person was killed by an israeli who serves in the military and other israeli security forces,
-c) 'killed_by_israeli' - the person was killed by an israeli who must NOT be from israeli army or israeli security forces.
-d) "unknown" - there's no enough certain information about the killer of the person.
-3. If You are uncertain, do NOT assume anything and select "unknown" category
+2. Match each description from the list to one of the float numbers below. The numbers express the probability if person was object of target killing or was involved in a conflict when killed:
+a) 0 - certainly not (killed by accident),
+b) 0.25 - rather no,
+c) 0.5 - unknown,
+d) 0.75 - rather yes,
+e) 1 - certainly yes.
+
   """,
     example="""
 example prompt #1: ['Killed during IDF incursion into the el-Burej refugee camp', ' A civilian killed in Hamas bomb attack']
 
-answer: ["killed_by_idf", "killed_by_palestinian"]
+answer: [0.5, 0.5]
 
-example_prompt #2: ["Died in a fire exchange between unknown people", "Beaten to death by an israeli settler who was his neighbor on the street"]
+example_prompt #2: ["Died in a fire exchange between unknown people", "Beaten to death by an israeli settler who was his neighbor on the street", "IDF soldier shot him by accident"]
 
-answer: ["unknown", "killed_by_israeli"]
+answer: [0.75, 1, 0]
   """,
 )
 
@@ -50,7 +52,7 @@ ammunition_assistant_prompt = create_from_template(
       d) "ammunition_melee_weapons" - melee weapons and martial arts
       e) "ammunition_other" - unknown or none of the above, e.g. fire and car (or when missing information)
 f) "unknown" - there's no enough certain information about the weapon used.
-3. If You are uncertain, do NOT assume anything and select "unknown" category
+
   """,
     example="""
 example prompt #1: ['Killed during IDF incursion into the el-Burej refugee camp', ' A civilian killed in Hamas bomb attack']
