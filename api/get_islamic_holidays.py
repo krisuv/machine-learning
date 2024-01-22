@@ -5,8 +5,6 @@ import requests
 from requests.exceptions import HTTPError, Timeout
 from api.constants import START_YEAR, END_YEAR
 from concurrent.futures import ThreadPoolExecutor
-from utils.file_utils import save_to_csv_file
-import sys
 
 
 def get_data_concurrently(function, cpu_threads_amount) -> list:
@@ -74,13 +72,3 @@ def get_islamic_holidays(ordinal: int, cpu_threads_amount: int) -> list[dict[str
                 print(f"Timeout error occurred: {timeout_err}")
 
     return holiday_dates
-
-
-islamic_holiday_dates = get_data_concurrently(
-    function=get_islamic_holidays, cpu_threads_amount=int(sys.argv[1])
-)
-save_to_csv_file(
-    file_name="islamic_holidays",
-    data=islamic_holiday_dates,
-    fieldnames=["date", "name"],
-)

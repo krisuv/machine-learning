@@ -1,6 +1,6 @@
 from pandas import DataFrame
 from enums import Default_columns, Restructured_columns
-from column_transformers.one_hot_encoder import transform_categorical_data
+from transformers.utils import transform_categorical_data
 
 
 def transform_killed_by(data_frame: DataFrame) -> None:

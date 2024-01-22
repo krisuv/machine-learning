@@ -5,11 +5,10 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
-def chat_gpt4(assistant_message: str, user_prompt: str, max_tokens=650) -> str:
+def perform_llm_prompt_request(assistant_message: str, user_prompt: str) -> str:
+    max_tokens = 650
     load_dotenv()
-
     openai_api_key = os.getenv("OPENAI_API_KEY")
-    print(openai_api_key)
 
     llm = ChatOpenAI(
         openai_api_key=openai_api_key,
@@ -24,9 +23,10 @@ def chat_gpt4(assistant_message: str, user_prompt: str, max_tokens=650) -> str:
             ("user", "{input}"),
         ]
     )
+
     chain = prompt | llm
     output_parser = StrOutputParser()
     chain = prompt | llm | output_parser
-    llm_answer = chain.invoke({"input": user_prompt})
+    llm_answer = chain.invoke({"input": user_prompt}).split(',')
 
     return llm_answer

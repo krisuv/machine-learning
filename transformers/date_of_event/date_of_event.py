@@ -1,17 +1,7 @@
 """ Transform 'date_of_event' column """
-from typing import Literal
 from pandas import DataFrame
 from enums import Default_columns, Restructured_columns
-from utils.file_utils import read_dict_data_from_csv_file
-
-
-def check_is_date_holiday(date: str, holidays: dict[str, str]) -> Literal[0, 1]:
-    """if there's a holiday on the date, return 1, otherwise 0"""
-    print(date)
-    if holidays.get(date):
-        print(date, holidays[date])
-    return 1 if holidays.get(date) else 0
-
+from .utils import check_is_date_holiday, read_dict_data_from_csv_file
 
 def transform_date_of_event(data_frame: DataFrame) -> None:
     """

@@ -1,12 +1,12 @@
 from pandas import read_csv, DataFrame
 from enums import Default_columns
-from column_transformers.ammunition import transform_ammunition
-from column_transformers.age import transform_age
-from column_transformers.citizenship import transform_citizenship
-from column_transformers.gender import transform_gender
-from column_transformers.date_of_event import transform_date_of_event
-from column_transformers.killed_by import transform_killed_by
-from column_transformers.took_part_in_hostilities import (
+from transformers.ammunition.ammunition import transform_ammunition
+from transformers.age import transform_age
+from transformers.citizenship import transform_citizenship
+from transformers.gender import transform_gender
+from transformers.date_of_event.date_of_event import transform_date_of_event
+from transformers.killed_by import transform_killed_by
+from transformers.took_part_in_hostilities import (
     transform_took_part_in_hostilities,
 )
 

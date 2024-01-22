@@ -32,13 +32,22 @@ e) 1 - certainly yes.
 
   """,
     example="""
-example prompt #1: ['Killed during IDF incursion into the el-Burej refugee camp', ' A civilian killed in Hamas bomb attack']
+example prompt #1: 
 
-answer: [0.5, 0.5]
+Killed during IDF incursion into the el-Burej refugee camp, 
 
-example_prompt #2: ["Died in a fire exchange between unknown people", "Beaten to death by an israeli settler who was his neighbor on the street", "IDF soldier shot him by accident"]
+A civilian killed in Hamas bomb attack
 
-answer: [0.75, 1, 0]
+answer: 0.5, 0.5
+
+example_prompt #2: 
+Died in a fire exchange between unknown people. 
+
+Beaten to death by an israeli settler who was his neighbor on the street. 
+
+IDF soldier shot him by accident.
+
+answer: 0.75, 1, 0
   """,
 )
 
@@ -55,12 +64,18 @@ f) "unknown" - there's no enough certain information about the weapon used.
 
   """,
     example="""
-example prompt #1: ['Killed during IDF incursion into the el-Burej refugee camp', ' A civilian killed in Hamas bomb attack']
+example prompt #1: 
+  Killed during IDF incursion into the el-Burej refugee camp.
+  
+  A civilian killed in Hamas bomb attack.
 
-answer: ["ammunition_fireamrs", "ammunition_groud_explosives"]
+answer: ammunition_fireamrs, ammunition_groud_explosives
 
-example_prompt #2: ["Died in a fire exchange between unknown people", "Beaten to death by an israeli settler who was his neighbor on the street"]
+example_prompt #2: 
+Died in a fire exchange between unknown people. 
 
-answer: ["ammunition_fireamrs", "melee_weapons"]
+Beaten to death by an israeli settler who was his neighbor on the street.
+
+answer: ammunition_fireamrs, melee_weapons
   """,
 )
