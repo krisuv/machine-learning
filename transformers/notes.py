@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from enums import Default_columns
+from data.col_names import Default_columns
 
 
 # remove 'notes' column from the final DataFrame

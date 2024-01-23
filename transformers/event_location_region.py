@@ -1,6 +1,6 @@
 """ Transform 'event_location_region' column """
 from pandas import DataFrame
-from enums import Default_columns, Restructured_columns
+from data.col_names import Default_columns, Restructured_columns
 from transformers.utils import transform_categorical_data
 
 

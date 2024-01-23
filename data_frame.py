@@ -1,5 +1,5 @@
 from pandas import read_csv, DataFrame
-from enums import Default_columns
+from data.col_names import Default_columns
 from transformers.ammunition.ammunition import transform_ammunition
 from transformers.age import transform_age
 from transformers.citizenship import transform_citizenship

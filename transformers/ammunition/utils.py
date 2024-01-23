@@ -1,5 +1,5 @@
 from pandas import DataFrame, isna
-from enums import Default_columns
+from data.col_names import Default_columns
 from gpt4.prompts import ammunition_assistant_prompt
 from gpt4.config import perform_llm_prompt_request
 from .consts import ammo_types

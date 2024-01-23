@@ -1,4 +1,4 @@
-from enums import Restructured_columns
+from data.col_names import Restructured_columns
 
 ammo_types = [
     {

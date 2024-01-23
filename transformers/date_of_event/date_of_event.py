@@ -1,6 +1,6 @@
 """ Transform 'date_of_event' column """
 from pandas import DataFrame
-from enums import Default_columns, Restructured_columns
+from data.col_names import Default_columns, Restructured_columns
 from .utils import check_is_date_holiday, read_dict_data_from_csv_file
 
 def transform_date_of_event(data_frame: DataFrame) -> None:

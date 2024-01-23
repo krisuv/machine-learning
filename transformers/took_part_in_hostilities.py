@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from enums import Default_columns
+from data.col_names import Default_columns
 from gpt4.config import perform_llm_prompt_request
 from gpt4.prompts import took_part_in_hostilities_prompt
 from transformers.utils import chunkate_notes
