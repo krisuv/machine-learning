@@ -3,5 +3,14 @@
   "python.analysis.inlayHints.functionReturnTypes": true,
   "python.analysis.inlayHints.pytestParameters": true,
   "python.REPL.enableREPLSmartSend": true,
-  "python.analysis.autoFormatStrings": true
+  "python.analysis.autoFormatStrings": true,
+  "cSpell.words": [
+    "consts",
+    "dotenv",
+    "dropna",
+    "hijri",
+    "isna",
+    "langchain",
+    "openai"
+  ]
 }

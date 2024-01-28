@@ -5,7 +5,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
-def perform_llm_prompt_request(assistant_message: str, user_prompt: str) -> str:
+def perform_llm_prompt_request(assistant_message: str, user_prompt: str) -> list[str]:
     max_tokens = 650
     load_dotenv()
     openai_api_key = os.getenv("OPENAI_API_KEY")

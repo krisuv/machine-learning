@@ -1,10 +1,10 @@
 """module with functions for getting Islamic holidays from 2000 to 2023"""
 import math
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 import requests
 from requests.exceptions import HTTPError, Timeout
 from api.constants import START_YEAR, END_YEAR
-from concurrent.futures import ThreadPoolExecutor
 
 
 def get_data_concurrently(function, cpu_threads_amount) -> list:
@@ -39,7 +39,7 @@ def get_islamic_holidays(ordinal: int, cpu_threads_amount: int) -> list[dict[str
                     f"in progress... {month}.{year} (working on thread #{ordinal + 1})"
                 )
                 url = f"http://api.aladhan.com/v1/gToHCalendar/{month}/{year}"
-                response = requests.get(url, timeout=200)
+                response = requests.get(url, timeout=5)
                 response.raise_for_status()
 
                 data_list_json = response.json()
@@ -49,14 +49,13 @@ def get_islamic_holidays(ordinal: int, cpu_threads_amount: int) -> list[dict[str
                     filter(lambda day: len(day["hijri"]["holidays"]) > 0, data_list)
                 )
 
-                # save only 1st holiday, if more take place the same day
                 dates_list = list(
                     map(
                         lambda day: {
-                            "date": datetime.strptime(
-                                day["gregorian"]["date"], "%Y-%m-%d"
-                            ),
-                            "name": day["hijri"]["holidays"][0],
+                            "key": datetime.strptime(
+                                day["gregorian"]["date"], "%d-%m-%Y"
+                            ).strftime("%Y-%m-%d"),
+                            "value": day["hijri"]["holidays"][0],
                         },
                         data_filtered,
                     )

@@ -1,4 +1,4 @@
-from data.col_names import Restructured_columns
+from data.col_names import TransformedColumns
 
 ammo_types = [
     {
@@ -8,11 +8,11 @@ ammo_types = [
             "0.22-caliber bullets",
             "gunfire",
         ],
-        "type": Restructured_columns.AMMUNITION_FIREARMS,
+        "type": TransformedColumns.AMMUNITION_FIREARMS,
     },
     {
         "items": ["explosive belt", "bomb", "car bomb", "grenade"],
-        "type": Restructured_columns.AMMUNITION_GROUND_EXPLOSIVES,
+        "type": TransformedColumns.AMMUNITION_GROUND_EXPLOSIVES,
     },
     {
         "items": [
@@ -25,7 +25,7 @@ ammo_types = [
             "grad rocket",
             "shelling",
         ],
-        "type": Restructured_columns.AMMUNITION_AIR_EXPLOSIVES,
+        "type": TransformedColumns.AMMUNITION_AIR_EXPLOSIVES,
     },
     {
         "items": [
@@ -39,7 +39,7 @@ ammo_types = [
             "Strangulation",
             "stabbing",
         ],
-        "type": Restructured_columns.AMMUNITION_MELEE_WEAPONS,
+        "type": TransformedColumns.AMMUNITION_MELEE_WEAPONS,
     },
     {
         "items": [
@@ -51,6 +51,6 @@ ammo_types = [
             "hit by a vehicle",
             "fire",
         ],
-        "type": Restructured_columns.AMMUNITION_OTHER,
+        "type": TransformedColumns.AMMUNITION_OTHER,
     },
 ]

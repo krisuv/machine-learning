@@ -17,7 +17,7 @@ def get_jewish_holidays() -> list[dict[str, str]]:
 
         holiday_dates = list(
             map(
-                lambda holiday: {"date": holiday["date"], "name": holiday["title"]},
+                lambda holiday: {"key": holiday["date"], "value": holiday["title"]},
                 data_list,
             )
         )
