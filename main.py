@@ -23,26 +23,6 @@ def main() -> None:
     transform_columns(data_frame)
     decision_tree_prediction(
         data_frame,
-        features=[
-            TransformedColumns.AGE,
-            TransformedColumns.IS_PALESTINIAN,
-            TransformedColumns.IS_ISRAELI,
-            TransformedColumns.IS_FEMALE,
-            TransformedColumns.IS_MALE,
-            TransformedColumns.EVENT_LOCATION_GAZA_STRIP,
-            TransformedColumns.EVENT_LOCATION_WEST_BANK,
-            TransformedColumns.EVENT_LOCATION_ISRAEL,
-            TransformedColumns.KILLED_BY_IDF,
-            TransformedColumns.KILLED_BY_ISRAELI_CIVILIAN,
-            TransformedColumns.KILLED_BY_PALESTINIAN,
-            TransformedColumns.DATE_ISLAMIC_HOLIDAY,
-            TransformedColumns.DATE_JEWISH_HOLIDAY,
-            TransformedColumns.AMMUNITION_FIREARMS,
-            TransformedColumns.AMMUNITION_GROUND_EXPLOSIVES,
-            # TransformedColumns.AMMUNITION_AIR_EXPLOSIVES,
-            TransformedColumns.AMMUNITION_MELEE_WEAPONS,
-        ],
-        predicator=TransformedColumns.AMMUNITION_AIR_EXPLOSIVES
     )
 
 

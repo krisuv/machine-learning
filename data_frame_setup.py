@@ -1,7 +1,9 @@
 """ This module is responsible for setting up the data frame. """
-from pandas import read_csv, DataFrame, set_option
+from pandas import read_csv, DataFrame, set_option, concat
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
+
+# from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import mean_absolute_error
 from data.col_names import DefaultColumns, TransformedColumns
 from transformers.ammunition.ammunition import transform_ammunition
@@ -11,6 +13,9 @@ from transformers.gender import transform_gender
 from transformers.date_of_event.date_of_event import transform_date_of_event
 from transformers.killed_by import transform_killed_by
 from transformers.event_location_region import transform_event_location_region
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.utils import shuffle
+from df_setup.col_relations import exclude_relations
 
 
 def create_data_frame() -> DataFrame:
@@ -76,10 +81,26 @@ def transform_columns(data_frame: DataFrame) -> None:
 
 def decision_tree_prediction(
     data_frame: DataFrame,
-    features: list[TransformedColumns],
-    predicator: TransformedColumns,
 ) -> None:
+    column_names: list[TransformedColumns] = data_frame.columns.to_list()
+    predicator: TransformedColumns = input(
+        f"Select column to predict (possible columns: {', '.join(column_names)}):\n"
+    )
 
+    if predicator not in column_names:
+        raise ValueError("Column name not found in the data frame.")
+
+
+    features = list(
+        filter(
+            lambda column_name: column_name != predicator,
+            column_names,
+        )
+    )
+    
+    features = exclude_relations(features, predicator)
+
+    print(features)
     (X_train, X_test, y_train, y_test) = train_test_split(
         data_frame[features], data_frame[predicator], test_size=0.5
     )
@@ -87,10 +108,16 @@ def decision_tree_prediction(
     X_train.columns = X_train.columns.map(str)
     X_test.columns = X_test.columns.map(str)
 
-    decision_tree = DecisionTreeRegressor()
+    decision_tree = DecisionTreeClassifier()
 
     decision_tree.fit(X_train, y_train)
 
-    result = decision_tree.predict(X_test)
-    mae = mean_absolute_error(y_test, result)
-    print("Mean Absolute Error:", mae)
+    # result = decision_tree.predict(X_test)
+    # mae = mean_absolute_error(y_test, result)
+    # print("Mean Absolute Error:", f"{mae:.10f}")
+    predictions = decision_tree.predict(X_test)
+
+    # Evaluation metrics
+    print("Accuracy:", accuracy_score(y_test, predictions))
+    print("Classification Report:\n", classification_report(y_test, predictions))
+    print("Confusion Matrix:\n", confusion_matrix(y_test, predictions))
