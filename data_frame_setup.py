@@ -1,10 +1,8 @@
 """ This module is responsible for setting up the data frame. """
 from pandas import read_csv, DataFrame, set_option, concat
 from sklearn.model_selection import train_test_split
-
-# from sklearn.tree import DecisionTreeRegressor
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import mean_absolute_error
+from sklearn.utils import shuffle
 from data.col_names import DefaultColumns, TransformedColumns
 from transformers.ammunition.ammunition import transform_ammunition
 from transformers.age import transform_age
@@ -14,7 +12,6 @@ from transformers.date_of_event.date_of_event import transform_date_of_event
 from transformers.killed_by import transform_killed_by
 from transformers.event_location_region import transform_event_location_region
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.utils import shuffle
 from df_setup.col_relations import exclude_relations
 
 
@@ -79,6 +76,23 @@ def transform_columns(data_frame: DataFrame) -> None:
     transform_ammunition(data_frame)
 
 
+def balance_data(data_frame: DataFrame, column_name: TransformedColumns) -> DataFrame:
+    """balance the data frame by removing rows with too big representation of certain values"""
+    data_frame_0 = data_frame[data_frame[column_name] == 0]
+    data_frame_1 = data_frame[data_frame[column_name] == 1]
+
+    min_size = min(len(data_frame_0), len(data_frame_1))
+
+    data_frame_0_balanced = data_frame_0.sample(n=min_size)
+    data_frame_1_balanced = data_frame_1.sample(n=min_size)
+
+    data_frame_balanced = concat([data_frame_0_balanced, data_frame_1_balanced])
+
+    data_frame_balanced = shuffle(data_frame_balanced).reset_index(drop=True)
+
+    return data_frame_balanced
+
+
 def decision_tree_prediction(
     data_frame: DataFrame,
 ) -> None:
@@ -90,17 +104,17 @@ def decision_tree_prediction(
     if predicator not in column_names:
         raise ValueError("Column name not found in the data frame.")
 
-
     features = list(
         filter(
             lambda column_name: column_name != predicator,
             column_names,
         )
     )
-    
-    features = exclude_relations(features, predicator)
 
-    print(features)
+    features = exclude_relations(features, predicator)
+    
+    data_frame = balance_data(data_frame, predicator)
+
     (X_train, X_test, y_train, y_test) = train_test_split(
         data_frame[features], data_frame[predicator], test_size=0.5
     )
@@ -112,9 +126,6 @@ def decision_tree_prediction(
 
     decision_tree.fit(X_train, y_train)
 
-    # result = decision_tree.predict(X_test)
-    # mae = mean_absolute_error(y_test, result)
-    # print("Mean Absolute Error:", f"{mae:.10f}")
     predictions = decision_tree.predict(X_test)
 
     # Evaluation metrics

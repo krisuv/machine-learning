@@ -72,8 +72,8 @@ echo "✅ Successfuly installed packages"
 
 
 echo "Checking for data files about islamic and jewish holidays..."
-ISLAMIC_HOLIDAYS="data/islamic_holidays.py"
-JEWISH_HOLIDAYS="data/jewish_holidays.py"
+ISLAMIC_HOLIDAYS="../data/islamic_holidays.csv"
+JEWISH_HOLIDAYS="../data/jewish_holidays.csv"
 
 cd scripts
 
@@ -88,13 +88,12 @@ if [ ! -f "$ISLAMIC_HOLIDAYS" ]
     if [ -z "$cpu_threads_amount" ]
       then
         cpu_threads_amount=1
-      fi
-
-    elif (($cpu_threads_amount >= $cpu_threads_total ||  $cpu_threads_amount < 1))
+    elif (( $cpu_threads_amount >= $cpu_threads_total ||  $cpu_threads_amount < 1 ))
       then
         echo "❌ Can not reserve request amount of threads- selected more than maximum amount ($cpu_threads_total) or less than 1."
         exit 0
-      fi
+    fi
+
 
     python3 import_islamic_holidays.py $cpu_threads_amount || {
       echo "❌ Failed to load the data. Please try again"
@@ -117,4 +116,4 @@ if [ ! -f "$JEWISH_HOLIDAYS" ]
   fi
 
 echo "Now running main.py program..."
-python3 main.py
+cd .. && python3 main.py
