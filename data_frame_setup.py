@@ -1,4 +1,5 @@
 """ This module is responsible for setting up the data frame. """
+
 from pandas import read_csv, DataFrame, set_option, concat
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
@@ -11,7 +12,11 @@ from transformers.gender import transform_gender
 from transformers.date_of_event.date_of_event import transform_date_of_event
 from transformers.killed_by import transform_killed_by
 from transformers.event_location_region import transform_event_location_region
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix as sklearn_confusion_matrix,
+)
 from df_setup.col_relations import exclude_relations
 
 
@@ -78,15 +83,15 @@ def transform_columns(data_frame: DataFrame) -> None:
 
 def balance_data(data_frame: DataFrame, column_name: TransformedColumns) -> DataFrame:
     """balance the data frame by removing rows with too big representation of certain values"""
-    data_frame_0 = data_frame[data_frame[column_name] == 0]
-    data_frame_1 = data_frame[data_frame[column_name] == 1]
+    negative_values = data_frame[data_frame[column_name] == 0]
+    positive_values = data_frame[data_frame[column_name] == 1]
 
-    min_size = min(len(data_frame_0), len(data_frame_1))
+    min_size = min(len(negative_values), len(positive_values))
 
-    data_frame_0_balanced = data_frame_0.sample(n=min_size)
-    data_frame_1_balanced = data_frame_1.sample(n=min_size)
+    negative_values_balanced = negative_values.sample(n=min_size)
+    positive_values_balanced = positive_values.sample(n=min_size)
 
-    data_frame_balanced = concat([data_frame_0_balanced, data_frame_1_balanced])
+    data_frame_balanced = concat([negative_values_balanced, positive_values_balanced])
 
     data_frame_balanced = shuffle(data_frame_balanced).reset_index(drop=True)
 
@@ -103,6 +108,8 @@ def decision_tree_prediction(
 
     if predicator not in column_names:
         raise ValueError("Column name not found in the data frame.")
+    if predicator == TransformedColumns.AGE:
+        raise ValueError("Current implementation of decision model tree does not support regression data analysis.")
 
     features = list(
         filter(
@@ -112,7 +119,7 @@ def decision_tree_prediction(
     )
 
     features = exclude_relations(features, predicator)
-    
+
     data_frame = balance_data(data_frame, predicator)
 
     (X_train, X_test, y_train, y_test) = train_test_split(
@@ -128,7 +135,51 @@ def decision_tree_prediction(
 
     predictions = decision_tree.predict(X_test)
 
-    # Evaluation metrics
-    print("Accuracy:", accuracy_score(y_test, predictions))
     print("Classification Report:\n", classification_report(y_test, predictions))
-    print("Confusion Matrix:\n", confusion_matrix(y_test, predictions))
+
+    # EVALUATION METRICS
+    classification_report_showcase(y_test, predictions)
+    confusion_matrix_showcase(y_test, predictions)
+    general_accuracy_showcase(y_test, predictions)
+
+
+def confusion_matrix_showcase(y_test, predictions) -> None:
+    """function to showcase the confusion matrix"""
+    confusion_matrix = sklearn_confusion_matrix(y_test, predictions)
+
+    TP = confusion_matrix[1][1]
+    TN = confusion_matrix[0][0]
+    FP = confusion_matrix[0][1]
+    FN = confusion_matrix[1][0]
+
+    print(
+        f"""
+        Confusion Matrix:
+        
+        {confusion_matrix}
+        That is:
+        True Positive (TP): {TP}
+        True Negative: (TN) {TN}
+        False Positive: (FP) {FP}
+        False Negative: (FN) {FN}
+        
+        The equation for the confusion matrix is as follows:
+        Precision = TP / (TP + FP)
+        which is:
+        Precision = {round(TP/(TP + FP), 3)}
+    """
+    )
+
+def general_accuracy_showcase(y_test, predictions):
+    """function to showcase the general accuracy"""
+    accuracy = accuracy_score(y_test, predictions)
+    print(f"""Accuracy: 
+          {accuracy}
+          The accuracy value ranges from 0 to 1, where 1 is the best possible value, and 0- the worst one.
+          """)
+
+def classification_report_showcase(y_test, predictions):
+    """function to showcase the classification report"""
+    print(f"""Classification Report:
+          {classification_report(y_test, predictions)}
+          """)
