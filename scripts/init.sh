@@ -4,6 +4,7 @@ PROJECT_NAME="palestine"
 VENV_DIR="virtualenv"
 
 echo "Creating virtual environment..."
+sudo apt install python3-venv
 python3 -m venv $VENV_DIR
 
 source $VENV_DIR/bin/activate
@@ -30,10 +31,6 @@ pip install aiohttp==3.9.1 \
              joblib==1.3.2 \
              jsonpatch==1.33 \
              jsonpointer==2.4 \
-             langchain==0.1.0 \
-             langchain-community==0.0.9 \
-             langchain-core==0.1.7 \
-             langchain-openai==0.0.2 \
              langsmith==0.0.77 \
              marshmallow==3.20.1 \
              multidict==6.0.4 \
@@ -41,7 +38,7 @@ pip install aiohttp==3.9.1 \
              numpy==1.26.2 \
              openai==1.6.1 \
              packaging==23.2 \
-             pandas==2.1.4 \
+             pandas \
              pluggy==1.3.0 \
              pydantic==2.5.3 \
              pydantic_core==2.14.6 \

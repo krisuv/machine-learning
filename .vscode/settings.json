@@ -12,5 +12,8 @@
     "isna",
     "langchain",
     "openai"
-  ]
+  ],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }
