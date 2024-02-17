@@ -1,5 +1,4 @@
 """main program"""
-from data.col_names import TransformedColumns
 from data_frame_setup import (
     create_data_frame,
     drop_redundant_columns,

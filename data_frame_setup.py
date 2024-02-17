@@ -1,10 +1,10 @@
 """ This module is responsible for setting up the data frame. """
 
 from pandas import read_csv, DataFrame, set_option, concat
-from sklearn.model_selection import train_test_split, KFold
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import shuffle
 from data.col_names import DefaultColumns, TransformedColumns
+from decision_trees.k_fold import decision_tree_classifier_k_fold
+from decision_trees.max_depth import decision_tree_classifier_basic
 from transformers.ammunition.ammunition import transform_ammunition
 from transformers.age import transform_age
 from transformers.citizenship import transform_citizenship
@@ -12,13 +12,7 @@ from transformers.gender import transform_gender
 from transformers.date_of_event.date_of_event import transform_date_of_event
 from transformers.killed_by import transform_killed_by
 from transformers.event_location_region import transform_event_location_region
-from sklearn.metrics import (
-    accuracy_score,
-    classification_report,
-    confusion_matrix as sklearn_confusion_matrix,
-)
 from df_setup.col_relations import exclude_relations
-from numpy import mean
 
 
 def create_data_frame() -> DataFrame:
@@ -102,15 +96,28 @@ def balance_data(data_frame: DataFrame, column_name: TransformedColumns) -> Data
 def decision_tree_prediction(
     data_frame: DataFrame,
 ) -> None:
+    """function to predict the column using various decision tree classifiers"""
     column_names: list[TransformedColumns] = data_frame.columns.to_list()
+    print("""
+    ===============================================
+    | Decision Tree Classifier Prediction Program |
+    ===============================================
+    \n
+    Possible columns to predict:
+    """)
+    for index, column_name in enumerate(column_names):
+        print(f"{index + 1}) {column_name}")
     predicator: TransformedColumns = input(
-        f"Select column to predict (possible columns: {', '.join(column_names)}):\n"
-    )
+        '\nType in column NAME (e.g. is_male) to predict 👉 :'
+    ).strip()
+    print(f"\n✅ {predicator} selected as the predicator column.\n")
 
     if predicator not in column_names:
         raise ValueError("Column name not found in the data frame.")
     if predicator == TransformedColumns.AGE:
-        raise ValueError("Current implementation of decision model tree does not support regression data analysis.")
+        raise ValueError(
+            "Current implementation of decision model tree does not support regression data analysis."
+        )
 
     features = list(
         filter(
@@ -122,116 +129,9 @@ def decision_tree_prediction(
     features = exclude_relations(features, predicator)
 
     data_frame = balance_data(data_frame, predicator)
-    
+
     # decision tree basic
-    decision_tree__classifier_basic(data_frame, features, predicator)
-    
-    # using k-fold 
-    decision_tree_classifier_k_fold()
-    # (X_train, X_test, y_train, y_test) = train_test_split(
-    #     data_frame[features], data_frame[predicator], test_size=0.5
-    # )
+    decision_tree_classifier_basic(data_frame, features, predicator)
 
-    # X_train.columns = X_train.columns.map(str)
-    # X_test.columns = X_test.columns.map(str)
-
-    # decision_tree = DecisionTreeClassifier()
-
-    # decision_tree.fit(X_train, y_train)
-
-    # predictions = decision_tree.predict(X_test)
-
-    # print("Classification Report:\n", classification_report(y_test, predictions))
-
-    # # EVALUATION METRICS
-    # classification_report_showcase(y_test, predictions)
-    # confusion_matrix_showcase(y_test, predictions)
-    # general_accuracy_showcase(y_test, predictions)
-
-
-def confusion_matrix_showcase(y_test, predictions) -> None:
-    """function to showcase the confusion matrix"""
-    confusion_matrix = sklearn_confusion_matrix(y_test, predictions)
-
-    TP = confusion_matrix[1][1]
-    TN = confusion_matrix[0][0]
-    FP = confusion_matrix[0][1]
-    FN = confusion_matrix[1][0]
-
-    print(
-        f"""
-        Confusion Matrix:
-        
-        {confusion_matrix}
-        That is:
-        True Positive (TP): {TP}
-        True Negative: (TN) {TN}
-        False Positive: (FP) {FP}
-        False Negative: (FN) {FN}
-        
-        The equation for the confusion matrix is as follows:
-        Precision = TP / (TP + FP)
-        which is:
-        Precision = {round(TP/(TP + FP), 3)}
-    """
-    )
-
-def general_accuracy_showcase(y_test, predictions):
-    """function to showcase the general accuracy"""
-    accuracy = accuracy_score(y_test, predictions)
-    print(f"""Accuracy: 
-          {accuracy}
-          The accuracy value ranges from 0 to 1, where 1 is the best possible value, and 0- the worst one.
-          """)
-
-def classification_report_showcase(y_test, predictions):
-    """function to showcase the classification report"""
-    print(f"""Classification Report:
-          {classification_report(y_test, predictions)}
-          """)
-    
-    
-def decision_tree__classifier_basic(data_frame: DataFrame, features: list[TransformedColumns], predicator: TransformedColumns) -> None:
-    """ basic version of decision tree classifier """
-    (X_train, X_test, y_train, y_test) = train_test_split(
-        data_frame[features], data_frame[predicator], test_size=0.5
-    )
-
-    X_train.columns = X_train.columns.map(str)
-    X_test.columns = X_test.columns.map(str)
-
-    decision_tree = DecisionTreeClassifier()
-
-    decision_tree.fit(X_train, y_train)
-
-    predictions = decision_tree.predict(X_test)
-
-    # EVALUATION METRICS
-    classification_report_showcase(y_test, predictions)
-    confusion_matrix_showcase(y_test, predictions)
-    general_accuracy_showcase(y_test, predictions)
-    
-    
-    
-    
-    
-def decision_tree_classifier_k_fold(data_frame: DataFrame, features: list[TransformedColumns], predicator: TransformedColumns):
-    """ decision tree classifier using k-fold cross validation """
-    
-    split_amount = int(input('Enter amount of folds that your data frame will be dived into: '))
-    k_fold = KFold(split_amount).split(features)
-    
-    decision_tree = DecisionTreeClassifier()
-    
-    scores = []
-    for train_index, test_index in k_fold:
-        X_train, X_test = features[train_index], features[test_index]
-        y_train, y_test = predicator[train_index], predicator[test_index]
-        
-        decision_tree.fit(X_train, y_train)
-        predictions = decision_tree.predict(X_test)
-        
-        scores.append([y_test, predictions])
-     
-    
-    mean_y_test = mean()
+    # using k-fold
+    decision_tree_classifier_k_fold(data_frame, features, predicator)
