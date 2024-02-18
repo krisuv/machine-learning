@@ -2,15 +2,6 @@
 from pandas import DataFrame, get_dummies
 
 
-def chunkate_notes(missing_values: DataFrame, chunk_size: int = 5) -> list:
-    """Split notes in rows with missing values into chunks of size chunk_size,
-    which will be sent to the LMM API for completion of missing value."""
-    nan_values = missing_values.index.tolist()
-    return [
-        nan_values[i : i + chunk_size] for i in range(0, len(nan_values), chunk_size)
-    ]
-
-
 def transform_categorical_data(
     data_frame: DataFrame, column_name: str, new_column_names: dict[str, str]
 ) -> None:
