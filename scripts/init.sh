@@ -39,6 +39,7 @@ pip install aiohttp==3.9.1 \
              openai==1.6.1 \
              packaging==23.2 \
              pandas \
+             matplotplotlib \
              pluggy==1.3.0 \
              pydantic==2.5.3 \
              pydantic_core==2.14.6 \

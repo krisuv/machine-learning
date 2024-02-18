@@ -1,10 +1,10 @@
+"""Module to transform ammunition data into new categories"""
+from numpy import nan
 from pandas import DataFrame, isna
 from data.col_names import DefaultColumns
 from .consts import ammo_types
-from numpy import nan
 
 
-# for sorted args which have data
 def assign_new_ammo_type(ammunition: str) -> str:
     """fit ammunition column data into newly created categories"""
     for ammo_type in ammo_types:
@@ -15,6 +15,7 @@ def assign_new_ammo_type(ammunition: str) -> str:
 
 
 def format_ammunition_data(data_frame: DataFrame) -> None:
+    """function to format ammunition data into new categories"""
     for row in data_frame.index:
         ammunition = data_frame[DefaultColumns.AMMUNITION][row]
         injury_type = data_frame[DefaultColumns.TYPE_OF_INJURY][row]

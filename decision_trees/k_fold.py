@@ -1,3 +1,4 @@
+"""Decision Tree Classifier using k-fold cross validation"""
 from numpy import mean
 from pandas import DataFrame
 from sklearn.metrics import accuracy_score
@@ -11,7 +12,7 @@ def decision_tree_classifier_k_fold(
     data_frame: DataFrame,
     features: list[TransformedColumns],
     predicator: TransformedColumns,
-):
+) -> None:
     """decision tree classifier using k-fold cross validation"""
     print("""
     ===============================================
@@ -53,3 +54,5 @@ def decision_tree_classifier_k_fold(
     print(f"Mean accuracy: {mean_accuracy}")
     print(f"Highest accuracy: {max(accuracies)}")
     print(f"Lowest accuracy: {min(accuracies)}")
+    
+    

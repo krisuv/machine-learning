@@ -1,13 +1,16 @@
+"""Decision Tree Classifier basic and max depth analysis"""
+import matplotlib.pyplot as plot
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     classification_report,
     confusion_matrix as sklearn_confusion_matrix,
-    accuracy_score
+    accuracy_score,
 )
 from sklearn.tree import DecisionTreeClassifier
 
 from data.col_names import TransformedColumns
+
 
 
 def decision_tree_classifier_basic(
@@ -16,11 +19,13 @@ def decision_tree_classifier_basic(
     predicator: TransformedColumns,
 ) -> None:
     """basic version of decision tree classifier"""
-    print("""
+    print(
+        """
     ===============================================
-    | Decision Tree Classifier with max depth     |
+    | Decision Tree Classifier basic              |
     ===============================================
-    \n""")
+    \n"""
+    )
     (X_train, X_test, y_train, y_test) = train_test_split(
         data_frame[features], data_frame[predicator], test_size=0.5
     )
@@ -29,6 +34,10 @@ def decision_tree_classifier_basic(
     X_test.columns = X_test.columns.map(str)
 
     max_depth = int(input("Enter the depth tree number: "))
+    show_plot = input("Do you want to see the plot with all tree depths comparison? (y/n): ")
+    
+    if show_plot.lower() == "y":
+        decision_tree_classifier_max_depths(max_depth, X_train, y_train, X_test, y_test, predicator)
 
     decision_tree = DecisionTreeClassifier(max_depth=max_depth, random_state=2000)
 
@@ -40,6 +49,47 @@ def decision_tree_classifier_basic(
     classification_report_showcase(y_test, predictions)
     confusion_matrix_showcase(y_test, predictions)
     general_accuracy_showcase(y_test, predictions)
+
+
+def decision_tree_classifier_max_depths(
+    max_depth: int,
+    X_train: DataFrame,
+    y_train: DataFrame,
+    X_test: DataFrame,
+    y_test: DataFrame,
+    col_name: str,
+) -> None:
+    """Analyzes Decision Tree Classifier performance over a range of tree depths"""
+    print(
+        """
+    =================================================
+    | Decision Tree Depth Analysis                  |
+    =================================================
+    \n"""
+    )
+
+    depths = range(1, (max_depth + 1)) 
+    accuracies = []
+    path = f"data/decision_tree_depth_analysis_{col_name}.png"
+
+    for depth in depths:
+        decision_tree = DecisionTreeClassifier(max_depth=depth, random_state=2000)
+        decision_tree.fit(X_train, y_train)
+        predictions = decision_tree.predict(X_test)
+        accuracy = accuracy_score(y_test, predictions)
+        accuracies.append(accuracy)
+
+    plot.figure(figsize=(10, 6))
+    plot.plot(depths, accuracies, marker="o", linestyle="-", color="blue")
+    plot.title("Decision Tree Accuracy vs. Tree Depth")
+    plot.xlabel("Max Depth of Tree")
+    plot.ylabel("Accuracy")
+    plot.xticks(depths)
+    plot.grid(True)
+    plot.savefig(path)
+    plot.show()
+
+    print(f"Decision Tree Depth Analysis plot saved to {path}")
 
 
 def confusion_matrix_showcase(y_test, predictions) -> None:
@@ -70,7 +120,7 @@ def confusion_matrix_showcase(y_test, predictions) -> None:
     )
 
 
-def general_accuracy_showcase(y_test, predictions):
+def general_accuracy_showcase(y_test, predictions) -> None:
     """function to showcase the general accuracy"""
     accuracy = accuracy_score(y_test, predictions)
     print(
@@ -81,7 +131,7 @@ def general_accuracy_showcase(y_test, predictions):
     )
 
 
-def classification_report_showcase(y_test, predictions):
+def classification_report_showcase(y_test, predictions) -> None:
     """function to showcase the classification report"""
     print(
         f"""Classification Report:

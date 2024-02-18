@@ -4,7 +4,7 @@ from pandas import read_csv, DataFrame, set_option, concat
 from sklearn.utils import shuffle
 from data.col_names import DefaultColumns, TransformedColumns
 from decision_trees.k_fold import decision_tree_classifier_k_fold
-from decision_trees.max_depth import decision_tree_classifier_basic
+from decision_trees.max_depth import decision_tree_classifier_basic, decision_tree_classifier_max_depths
 from transformers.ammunition.ammunition import transform_ammunition
 from transformers.age import transform_age
 from transformers.citizenship import transform_citizenship
@@ -135,3 +135,4 @@ def decision_tree_prediction(
 
     # using k-fold
     decision_tree_classifier_k_fold(data_frame, features, predicator)
+
