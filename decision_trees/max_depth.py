@@ -1,5 +1,4 @@
 """Decision Tree Classifier basic and max depth analysis"""
-import matplotlib.pyplot as plot
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
@@ -8,8 +7,8 @@ from sklearn.metrics import (
     accuracy_score,
 )
 from sklearn.tree import DecisionTreeClassifier
-
 from data.col_names import TransformedColumns
+from decision_trees.plot import create_plot
 
 
 
@@ -27,7 +26,7 @@ def decision_tree_classifier_basic(
     \n"""
     )
     (X_train, X_test, y_train, y_test) = train_test_split(
-        data_frame[features], data_frame[predicator], test_size=0.5
+        data_frame[features], data_frame[predicator], test_size=0.2
     )
 
     X_train.columns = X_train.columns.map(str)
@@ -68,28 +67,16 @@ def decision_tree_classifier_max_depths(
     \n"""
     )
 
-    depths = range(1, (max_depth + 1)) 
     accuracies = []
-    path = f"data/decision_tree_depth_analysis_{col_name}.png"
 
-    for depth in depths:
+    for depth in range(1, (max_depth + 1)):
         decision_tree = DecisionTreeClassifier(max_depth=depth, random_state=2000)
         decision_tree.fit(X_train, y_train)
         predictions = decision_tree.predict(X_test)
         accuracy = accuracy_score(y_test, predictions)
         accuracies.append(accuracy)
-
-    plot.figure(figsize=(10, 6))
-    plot.plot(depths, accuracies, marker="o", linestyle="-", color="blue")
-    plot.title("Decision Tree Accuracy vs. Tree Depth")
-    plot.xlabel("Max Depth of Tree")
-    plot.ylabel("Accuracy")
-    plot.xticks(depths)
-    plot.grid(True)
-    plot.savefig(path)
-    plot.show()
-
-    print(f"Decision Tree Depth Analysis plot saved to {path}")
+        
+    create_plot(f"{col_name}_max_depth", max_depth, accuracies)
 
 
 def confusion_matrix_showcase(y_test, predictions) -> None:

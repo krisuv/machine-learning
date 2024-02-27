@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import KFold
 from sklearn.tree import DecisionTreeClassifier
 from data.col_names import TransformedColumns
-
+from decision_trees.plot import create_plot
 
 
 def decision_tree_classifier_k_fold(
@@ -48,6 +48,8 @@ def decision_tree_classifier_k_fold(
         predictions = decision_tree.predict(X_test)
 
         accuracies.append(accuracy_score(y_test, predictions))
+        
+    create_plot(f"{predicator}_k_fold", split_amount, accuracies)
 
     mean_accuracy = mean(accuracies)
 
